@@ -1,16 +1,22 @@
 from typing import Callable
 
 import sympy as sp
+from cryptography.hazmat.primitives.asymmetric import rsa
+
+from common import RSAKeyPair
 
 
-def rsa_keygen(bits: int = 512) -> tuple[int, int, int, int, int]:
-    """Generate RSA modulus n = p * q with small public exponent e."""
-    p = sp.randprime(2 ** (bits // 2 - 1), 2 ** (bits // 2))
-    q = sp.randprime(2 ** (bits // 2 - 1), 2 ** (bits // 2))
-    n = p * q
-    e = sp.randprime(2 ** (bits // 2 - 1), 2 ** (bits // 2))
-    d = sp.mod_inverse(e, (p - 1) * (q - 1))
-    return n, e, p, q, d
+def rsa_keygen(bits: int = 1024) -> RSAKeyPair:
+    """Generate a RSA key pair."""
+    e = 3
+    private_key = rsa.generate_private_key(public_exponent=e, key_size=bits)
+    return RSAKeyPair(
+        n=private_key.public_key().public_numbers().n,
+        e=e,
+        p=private_key.private_numbers().p,
+        q=private_key.private_numbers().q,
+        d=private_key.private_numbers().d,
+    )
 
 
 def encrypt(m: int, n: int, e: int) -> int:
@@ -34,16 +40,16 @@ def chosen_ciphertext_attack(
 
 
 if __name__ == "__main__":
-    n, e, p, q, d = rsa_keygen()
-    print(f"Public key: n = {n} e = {e}")
-    print(f"Private key: p = {p} q = {q} d = {d}")
+    kp = rsa_keygen()
 
     m = 100232
-    c = encrypt(m, n, e)
+    c = encrypt(m, kp.n, kp.e)
 
     print(f"Plaintext: {m}")
     print(f"Ciphertext: {c}")
 
     # Chosen ciphertext attack
-    m_recovered = chosen_ciphertext_attack(c, n, e, lambda c: decrypt(c, n, d))
+    m_recovered = chosen_ciphertext_attack(
+        c, kp.n, kp.e, lambda c: decrypt(c, kp.n, kp.d)
+    )
     print(f"Recovered plaintext: {m_recovered}")
