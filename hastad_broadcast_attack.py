@@ -1,4 +1,4 @@
-import sympy as sp
+import gmpy2
 from cryptography.hazmat.primitives.asymmetric import rsa
 
 from common import RSAKeyPair
@@ -76,7 +76,9 @@ def hastad_broadcast_attack(
     small public exponent e = 3.
     """
     x = chinese_remainder_theorem(kp1.n, kp2.n, kp3.n, c1, c2, c3)
-    m_recovered = sp.cbrt(x)
+    m_recovered, valid = gmpy2.iroot(x, 3)
+    if not valid:
+        raise ValueError("Cube root is not an integer")
     return m_recovered
 
 
