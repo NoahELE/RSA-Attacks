@@ -31,6 +31,6 @@ if __name__ == "__main__":
         public_key = get_public_key()
         plaintext = "Hello, server! This is a secret message."
         decrypted_message = encrypt_and_send_message(public_key, plaintext)
-        print(f"Server decrypted: {decrypted_message}")
+        print(f"Server decrypted: {decrypted_message}\n")
     except Exception as e:
-        print(f"Error occurs: {e}")
+        print(f"Error occurs: {e}\n")
