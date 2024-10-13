@@ -1,11 +1,17 @@
-from sympy import continued_fraction_convergents, Rational
+from sympy import continued_fraction_convergents, continued_fraction_iterator
 
 
 def wiener_attack(e, n):
-    convergents = continued_fraction_convergents(Rational(e, n))
-    for k, d in convergents:
+    iter = continued_fraction_iterator(e / n)
+    convergents_iter = continued_fraction_convergents(iter)
+    for r in convergents_iter:
+        # extract numerator and denominator
+        k = r.p
+        d = r.q
+
         if k == 0:
             continue
+
         phi = (e * d - 1) // k
         b = n - phi + 1
 
