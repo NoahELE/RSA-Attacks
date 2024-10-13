@@ -1,6 +1,7 @@
 from flask import Flask, request, jsonify
 from Crypto.PublicKey import RSA
 from Crypto.Cipher import PKCS1_OAEP
+import base64
 
 app = Flask(__name__)
 
@@ -21,7 +22,7 @@ def decrypt_message_and_reply():
         data = request.json
         if not data:
             raise ValueError("Invalid json format")
-        ciphertext = data["ciphertext"]
+        ciphertext = base64.b64decode(data["ciphertext"])
         cipher = PKCS1_OAEP.new(RSA.import_key(priv_key))
         plaintext = cipher.decrypt(ciphertext)
         return jsonify({"plaintext": plaintext}), 200
