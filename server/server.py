@@ -25,7 +25,7 @@ def decrypt_message_and_reply():
         ciphertext = base64.b64decode(data["ciphertext"])
         cipher = PKCS1_OAEP.new(RSA.import_key(priv_key))
         plaintext = cipher.decrypt(ciphertext)
-        return jsonify({"plaintext": plaintext}), 200
+        return jsonify({"plaintext": plaintext.decode()}), 200
     except ValueError as e:
         return jsonify({"error": str(e)}), 400
     except KeyError as e:
