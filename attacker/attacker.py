@@ -17,6 +17,7 @@ if __name__ == "__main__":
     n = public_key.n
     print(f"Public key obtained: (e={e}, n={n})\n")
 
+    print("Running attack...")
     priv_key_d = wiener.wiener_attack(e, n)
     if priv_key_d:
         print(f"Private key found: d={priv_key_d}\n")
