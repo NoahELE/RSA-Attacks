@@ -19,7 +19,7 @@ services:
     depends_on:
       - server
 
-  attcker:
+  attacker:
     build:
       context: ./attacker
       dockerfile: Dockerfile
