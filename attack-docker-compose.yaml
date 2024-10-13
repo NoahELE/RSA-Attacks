@@ -19,6 +19,15 @@ services:
     depends_on:
       - server
 
+  attcker:
+    build:
+      context: ./attacker
+      dockerfile: Dockerfile
+    networks:
+      - vulnerable_network
+    depends_on:
+      - server
+
 networks:
   vulnerable_network:
     driver: bridge
