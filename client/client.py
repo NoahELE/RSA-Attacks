@@ -2,6 +2,7 @@ import requests
 from Crypto.PublicKey import RSA
 from Crypto.Cipher import PKCS1_OAEP
 import time
+import base64
 
 SERVER_URL = "http://server:5000"  # to be changed to environment var
 
@@ -17,7 +18,7 @@ def encrypt_and_send_message(public_key, message):
 
         # encrypt message to server, tell it to decrypt and sends it back
         ciphertext = cipher.encrypt(message.encode())
-        payload = {"ciphertext": ciphertext}
+        payload = {"ciphertext": base64.b64encode(ciphertext).decode()}
         response = requests.post(f"{SERVER_URL}/decrypt", json=payload)
 
         return response.json()["plaintext"]
