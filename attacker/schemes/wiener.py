@@ -9,13 +9,13 @@ def wiener_attack(e, n):
         k = r.p
         d = r.q
 
-        if k == 0:
+        if k == 0 or (e * d - 1) % k != 0:
             continue
 
         phi = (e * d - 1) // k
         b = n - phi + 1
 
-        # check if x^2 - s*x + n = 0 has integer root
+        # check if x^2 - b*x + n = 0 has integer root
         discrim = b**2 - 4 * n
         if discrim >= 0:
             root = int(discrim**0.5)
