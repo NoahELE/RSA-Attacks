@@ -1,0 +1,24 @@
+version: "3"
+
+services:
+  server:
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    ports:
+      - "5050:5050"
+    networks:
+      - attack_network
+
+  client:
+    build:
+      context: ./client
+      dockerfile: Dockerfile
+    networks:
+      - vulnerable_network
+    depends_on:
+      - server
+
+networks:
+  vulnerable_network:
+    driver: bridge
