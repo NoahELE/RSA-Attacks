@@ -3,7 +3,7 @@ from Crypto.PublicKey import RSA
 from Crypto.Cipher import PKCS1_OAEP
 import time
 
-SERVER_URL = "http://localhost:5050"  # to be changed to environment var
+SERVER_URL = "http://server:5000"  # to be changed to environment var
 
 
 def get_public_key():
