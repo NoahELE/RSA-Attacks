@@ -1,7 +1,6 @@
 import requests
 from Crypto.PublicKey import RSA
 from Crypto.Cipher import PKCS1_OAEP
-import time
 import base64
 
 SERVER_URL = "http://server:5000"  # to be changed to environment var
@@ -28,9 +27,8 @@ def encrypt_and_send_message(public_key, message):
 
 if __name__ == "__main__":
     try:
-        time.sleep(5)  # hardcoded sleeper to wait for server to start
         public_key = get_public_key()
-        plaintext = "Hello, server! This is a secret message."
+        plaintext = "They actually love cats."
         decrypted_message = encrypt_and_send_message(public_key, plaintext)
         print(f"Server decrypted: {decrypted_message}\n")
     except Exception as e:
