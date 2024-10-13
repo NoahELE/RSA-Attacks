@@ -28,7 +28,7 @@ def encrypt_and_send_message(public_key, message):
 if __name__ == "__main__":
     try:
         public_key = get_public_key()
-        plaintext = "They actually love cats."
+        plaintext = input("Enter the text you want to send to the server: ")
         decrypted_message = encrypt_and_send_message(public_key, plaintext)
         print(f"Server decrypted: {decrypted_message}\n")
     except Exception as e:
