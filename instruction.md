@@ -25,3 +25,9 @@ $ docker-compose -f ./attack-docker-compose.yaml run attacker /bin/bash
 ```
 
 > this will automatically starts the server
+
+and run
+
+```
+$ python ./attacker.py
+```
