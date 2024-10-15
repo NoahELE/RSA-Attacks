@@ -68,8 +68,8 @@ def correct_lsb(e, k, tau_k, is_d):
 
 # Core function for the first phase of the RSA key reconstruction algorithm
 def reconstruct_rsa_key_first_phase(p, q, d, dp, dq, e, k, kp, kq):
-    p.bit_set(0)  # p is odd
-    q.bit_set(0)  # q is odd
+    p = p.bit_set(0)  # p is odd
+    q = q.bit_set(0)  # q is odd
 
     tau_kp = tau(kp)
     tau_kq = tau(kq)
@@ -79,12 +79,14 @@ def reconstruct_rsa_key_first_phase(p, q, d, dp, dq, e, k, kp, kq):
     dq = correct_lsb(e, kq, tau_kq, False)
     d = correct_lsb(e, k, tau_k, True)
 
-    return dp, dq, d
+    return p, q, dp, dq, d
 
 # Calculating p and q from my_dp and my_dq
 def compute_qp_from_dpq(e, k, temp_dp):
-    result = (e * temp_dp - 1) // k
-    result += 1
+    result = (e * temp_dp - 1) // k + 1
+    # result = gmpy2.divexact(result, k)
+    # result += 1
+    print("result: ", result)
     return result
 
 def calculate_d(p, q, e):
@@ -98,29 +100,46 @@ def branch_and_prune(result_p, result_q, my_p, my_q, my_d, my_dp, my_dq,
                      known_bits_q, known_bits_d, known_bits_dp,
                      known_bits_dq, verbose, counter):
     valid_solutions = []
+    valid_solutions_count = 0 
     result_n = gmpy2.mpz(0)
     result_d = gmpy2.mpz(0)
 
     for i in range(num_possibilities):
         possibility = possibilities[i]
-
+        print(possibility)
+        print(equation_8(N, my_p, my_q, possibility[0], possibility[1], counter), 
+            equation_9(N, e, k, tau_k, my_p, my_q, my_d, possibility[0], possibility[1], possibility[2], counter), 
+            equation_10(e, kp, tau_kp, my_p, my_dp, possibility[0], possibility[3], counter), 
+            equation_11(e, kq, tau_kq, my_q, my_dq, possibility[1], possibility[4], counter))
         if (equation_8(N, my_p, my_q, possibility[0], possibility[1], counter) and
             equation_9(N, e, k, tau_k, my_p, my_q, my_d, possibility[0], possibility[1], possibility[2], counter) and
             equation_10(e, kp, tau_kp, my_p, my_dp, possibility[0], possibility[3], counter) and
             equation_11(e, kq, tau_kq, my_q, my_dq, possibility[1], possibility[4], counter)):
             
             matches_known_bits = True
+            print("bool inside: ", (known_bits_p[counter] != -1 and known_bits_p[counter] != int(possibility[0])),
+                (known_bits_q[counter] != -1 and known_bits_q[counter] != int(possibility[1])),
+                (known_bits_d[counter + tau_k] != -1 and known_bits_d[counter + tau_k] != int(possibility[2])),
+                (known_bits_dp[counter + tau_kp] != -1 and known_bits_dp[counter + tau_kp] != int(possibility[3])),
+                (known_bits_dq[counter + tau_kq] != -1 and known_bits_dq[counter + tau_kq] != int(possibility[4])))
             if ((known_bits_p[counter] != -1 and known_bits_p[counter] != int(possibility[0])) or
                 (known_bits_q[counter] != -1 and known_bits_q[counter] != int(possibility[1])) or
                 (known_bits_d[counter + tau_k] != -1 and known_bits_d[counter + tau_k] != int(possibility[2])) or
                 (known_bits_dp[counter + tau_kp] != -1 and known_bits_dp[counter + tau_kp] != int(possibility[3])) or
                 (known_bits_dq[counter + tau_kq] != -1 and known_bits_dq[counter + tau_kq] != int(possibility[4]))):
                 matches_known_bits = False
+                # print(f"counter: {counter}")
+                # print(f"possibility: ", possibility)
 
             if matches_known_bits:
                 valid_solution = ValidSolution()
+
+                for j in range(5):
+                    valid_solution.slice[j] = possibility[j]
                 valid_solution.slice = possibility
                 valid_solutions.append(valid_solution)
+                valid_solutions_count += 1
+                print("slice before valid: ", valid_solutions[valid_solutions_count-1].slice)
                 
                 if verbose:
                     print(f"Valid combination for Slice({counter}): "
@@ -128,10 +147,19 @@ def branch_and_prune(result_p, result_q, my_p, my_q, my_d, my_dp, my_dq,
                           f"d[{tau_k + counter}]={possibility[2]}, "
                           f"dp[{tau_kp + counter}]={possibility[3]}, "
                           f"dq[{tau_kq + counter}]={possibility[4]}")
+                    print(f"------------------------------------------------------------\nThe value of my p is : {my_p}")
+                    print(f"The value of my q is : {my_q}")
+                    print(f"The value of my d is : {my_d}")
+                    print(f"The value of my dp is : {my_dp}")
+                    print(f"The value of my dq is : {my_dq}\n------------------------------------------------------------")
 
+                print("e, kp, my_dp: ", e, kp, my_dp)
+                print("e, kq, my_dq: ", e, kq, my_dq)
                 result_p = compute_qp_from_dpq(e, kp, my_dp)
                 result_q = compute_qp_from_dpq(e, kq, my_dq)
                 result_n = result_p * result_q
+                print("result_p, result_q: ", result_p, result_q)
+                print(f"The value of result_n is : {result_n}, N: {N}")
                 
                 if result_n == N:
                     print("\n------------------------------------------------------------\n\t\t\tResults:\n------------------------------------------------------------\n")
@@ -141,7 +169,7 @@ def branch_and_prune(result_p, result_q, my_p, my_q, my_d, my_dp, my_dq,
                     print(f"The correct value of d is : {result_d}")
                     print(f"The correct value of dp is : {my_dp}")
                     print(f"The correct value of dq is : {my_dq}")
-                    return
+                    return result_p, result_q
 
     for valid_solution in valid_solutions:
         cloned_my_p = my_p
@@ -149,29 +177,33 @@ def branch_and_prune(result_p, result_q, my_p, my_q, my_d, my_dp, my_dq,
         cloned_my_d = my_d
         cloned_my_dp = my_dp
         cloned_my_dq = my_dq
+        print("ATTENTAION_PRE: ", cloned_my_p, cloned_my_q, cloned_my_d,
+                         cloned_my_dp, cloned_my_dq)
 
         slice = valid_solution.slice
-        if slice[0] == '1':
-            cloned_my_p.bit_set(counter)
-        if slice[1] == '1':
-            cloned_my_q.bit_set(counter)
-        if slice[2] == '1':
-            cloned_my_d.bit_set(counter + tau_k)
-        if slice[3] == '1':
-            cloned_my_dp.bit_set(counter + tau_kp)
-        if slice[4] == '1':
-            cloned_my_dq.bit_set(counter + tau_kq)
-
-        result_p, result_q, counter = branch_and_prune(result_p, result_q, cloned_my_p, cloned_my_q, cloned_my_d,
+        print("slice: ", slice, "counter: ", counter, tau_k, tau_kp, tau_kq)
+        if slice[0] == 1:
+            cloned_my_p = cloned_my_p.bit_set(counter)
+        if slice[1] == 1:
+            cloned_my_q = cloned_my_q.bit_set(counter)
+        if slice[2] == 1:
+            cloned_my_d = cloned_my_d.bit_set(counter + tau_k)
+        if slice[3] == 1:
+            cloned_my_dp = cloned_my_dp.bit_set(counter + tau_kp)
+        if slice[4] == 1:
+            cloned_my_dq = cloned_my_dq.bit_set(counter + tau_kq)
+        print("ATTENTAION: ", cloned_my_p, cloned_my_q, cloned_my_d,
+                         cloned_my_dp, cloned_my_dq)
+        result_p, result_q = branch_and_prune(result_p, result_q, cloned_my_p, cloned_my_q, cloned_my_d,
                          cloned_my_dp, cloned_my_dq, e, k, kp, kq, N, tau_k, tau_kp,
                          tau_kq, possibilities, num_possibilities, known_bits_p,
                          known_bits_q, known_bits_d, known_bits_dp, known_bits_dq,
                          verbose, counter + 1)
-    return result_p, result_q, counter
+    return result_p, result_q
 
 def main():
     verbose = True 
-    counter = 0
+    counter = 1
 
     possibilities = [
         (0, 0, 0, 0, 0), (0, 0, 0, 0, 1), (0, 0, 0, 1, 0), (0, 0, 0, 1, 1),
@@ -211,9 +243,9 @@ def main():
     my_dq = gmpy2.mpz(0)  # 等价于 mpz_set_ui(my_dq, 0);
 
     # 设置 k, kp, kq 的值
-    k = gmpy2.mpz(11149)
-    kp = gmpy2.mpz(60398)
-    kq = gmpy2.mpz(32573)
+    k = gmpy2.mpz(35600)
+    kp = gmpy2.mpz(25055)
+    kq = gmpy2.mpz(3229)
 
     # Set value for N (example value, replace with actual value)
     with open("RSA-Key.txt", "r") as file:
@@ -235,7 +267,7 @@ def main():
     known_bits_dq = read_known_bits("known_bits_dq.txt")
 
     # 第一阶段的 RSA 密钥重构
-    my_dp, my_dq, my_d = reconstruct_rsa_key_first_phase(my_p, my_q, my_d, my_dp, my_dq, e, k, kp, kq)
+    my_p, my_q, my_dp, my_dq, my_d = reconstruct_rsa_key_first_phase(my_p, my_q, my_d, my_dp, my_dq, e, k, kp, kq)
 
     # 计算 k、kp 和 kq 的 τ 值
     tau_k = tau(k)
@@ -250,20 +282,19 @@ def main():
         f"d[{tau_k}]={get_gmp_bit(my_d, tau_k)}, dp[{tau_kp}]={get_gmp_bit(my_dp, tau_kp)}, "
         f"dq[{tau_kq}]={get_gmp_bit(my_dq, tau_kq)}")
     
-    print(result_p, result_q, my_p, my_q, my_d, my_dp, my_dq, e, k, kp, kq, N, tau_k, tau_kp, tau_kq, 
-                    possibilities, 32, known_bits_p, known_bits_q, known_bits_d, known_bits_dp, known_bits_dq, verbose, counter)
+    # print(result_p, result_q, my_p, my_q, my_d, my_dp, my_dq, e, k, kp, kq, N, tau_k, tau_kp, tau_kq, 
+    #                 possibilities, 32, known_bits_p, known_bits_q, known_bits_d, known_bits_dp, known_bits_dq, verbose, counter)
 
     # 开始 Heninger 和 Shacham 的核心算法
-    result_p, result_q, counter = branch_and_prune(result_p, result_q, my_p, my_q, my_d, my_dp, my_dq, e, k, kp, kq, N, tau_k, tau_kp, tau_kq, 
-                    possibilities, 32, known_bits_p, known_bits_q, known_bits_d, known_bits_dp, known_bits_dq, verbose, counter)
-    print(result_p, result_q, my_p, my_q, my_d, my_dp, my_dq, e, k, kp, kq, N, tau_k, tau_kp, tau_kq, 
-                    possibilities, 32, known_bits_p, known_bits_q, known_bits_d, known_bits_dp, known_bits_dq, verbose, counter)
+    result_p, result_q = branch_and_prune(result_p, result_q, my_p, my_q, my_d, my_dp, my_dq, e, k, kp, kq, N, tau_k, tau_kp, tau_kq, 
+                    possibilities, 32, known_bits_p, known_bits_q, known_bits_d, known_bits_dp, known_bits_dq, verbose, 1)
+    print("FIRST END, ", result_p, result_q)
 
     # 切换 Kp 和 Kq 进行第二次执行
-    result_p, result_q, counter = branch_and_prune(result_p, result_q, my_p, my_q, my_d, my_dp, my_dq, e, k, kq, kp, N, tau_k, tau_kq, tau_kp, 
-                    possibilities, 32, known_bits_p, known_bits_q, known_bits_d, known_bits_dp, known_bits_dq, verbose, counter)
-    print(result_p, result_q, my_p, my_q, my_d, my_dp, my_dq, e, k, kp, kq, N, tau_k, tau_kp, tau_kq, 
-                    possibilities, 32, known_bits_p, known_bits_q, known_bits_d, known_bits_dp, known_bits_dq, verbose, counter)
+    result_p, result_q = branch_and_prune(result_p, result_q, my_p, my_q, my_d, my_dp, my_dq, e, k, kq, kp, N, tau_k, tau_kq, tau_kp, 
+                    possibilities, 32, known_bits_p, known_bits_q, known_bits_d, known_bits_dp, known_bits_dq, verbose, 1)
+    # print(result_p, result_q, my_p, my_q, my_d, my_dp, my_dq, e, k, kp, kq, N, tau_k, tau_kp, tau_kq, 
+    #                 possibilities, 32, known_bits_p, known_bits_q, known_bits_d, known_bits_dp, known_bits_dq, verbose, counter)
 
 if __name__ == "__main__":
     main()
