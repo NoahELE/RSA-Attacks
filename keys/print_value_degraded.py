@@ -19,10 +19,11 @@ def flip_bits_and_compute_d(orig_filename, mod_filename):
             for line in mod_file:
                 position, value = map(int, line.split())
                 if value == -1:  # 仅在需要翻转位时操作
-                    if gmpy2.bit_test(d, position):  # 如果当前位是1，则翻转为0
-                        d = gmpy2.bit_clear(d, position)
-                    else:  # 翻转为1
-                        d = gmpy2.bit_set(d, position)
+                    d = gmpy2.bit_set(d, position)
+                    # if gmpy2.bit_test(d, position):  # 如果当前位是1，则翻转为0
+                    #     d = gmpy2.bit_clear(d, position)
+                    # else:  # 翻转为1
+                    #     d = gmpy2.bit_set(d, position)
 
         # 打印最终的d值
         print(f"Final value of d: {d}")

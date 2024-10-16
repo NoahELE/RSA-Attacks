@@ -2,7 +2,7 @@ import gmpy2
 import random
 import time
 
-KNOWN_BIT_PERCENTAGE = 70
+KNOWN_BIT_PERCENTAGE = 27
 
 class KnownBit:
     def __init__(self, position, value):

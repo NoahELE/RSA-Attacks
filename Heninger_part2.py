@@ -8,12 +8,12 @@ class ValidSolution:
 
 # Read files that store known bits
 def read_known_bits(filename):
-    known_bits = np.full(1024, -1)  # Initialize with -1
+    known_bits = np.full(2048, -1)  # Initialize with -1
     try:
         with open(filename, 'r') as file:
             for line in file:
                 index, value = map(int, line.split())
-                if index < 1024:
+                if index < 2048:
                     known_bits[index] = value
     except IOError:
         print(f"Error opening file: {filename}")
@@ -103,6 +103,7 @@ def branch_and_prune(result_p, result_q, my_p, my_q, my_d, my_dp, my_dq,
     valid_solutions_count = 0 
     result_n = gmpy2.mpz(0)
     result_d = gmpy2.mpz(0)
+    is_solved = False
 
     for i in range(num_possibilities):
         possibility = possibilities[i]
@@ -162,6 +163,7 @@ def branch_and_prune(result_p, result_q, my_p, my_q, my_d, my_dp, my_dq,
                 print(f"The value of result_n is : {result_n}, N: {N}")
                 
                 if result_n == N:
+                    is_solved = True
                     print("\n------------------------------------------------------------\n\t\t\tResults:\n------------------------------------------------------------\n")
                     print(f"The correct value of p is : {result_p}")
                     print(f"The correct value of q is : {result_q}")
@@ -169,7 +171,7 @@ def branch_and_prune(result_p, result_q, my_p, my_q, my_d, my_dp, my_dq,
                     print(f"The correct value of d is : {result_d}")
                     print(f"The correct value of dp is : {my_dp}")
                     print(f"The correct value of dq is : {my_dq}")
-                    return result_p, result_q
+                    return result_p, result_q, is_solved
 
     for valid_solution in valid_solutions:
         cloned_my_p = my_p
@@ -194,14 +196,18 @@ def branch_and_prune(result_p, result_q, my_p, my_q, my_d, my_dp, my_dq,
             cloned_my_dq = cloned_my_dq.bit_set(counter + tau_kq)
         print("ATTENTAION: ", cloned_my_p, cloned_my_q, cloned_my_d,
                          cloned_my_dp, cloned_my_dq)
-        result_p, result_q = branch_and_prune(result_p, result_q, cloned_my_p, cloned_my_q, cloned_my_d,
+        result_p, result_q, is_solved = branch_and_prune(result_p, result_q, cloned_my_p, cloned_my_q, cloned_my_d,
                          cloned_my_dp, cloned_my_dq, e, k, kp, kq, N, tau_k, tau_kp,
                          tau_kq, possibilities, num_possibilities, known_bits_p,
                          known_bits_q, known_bits_d, known_bits_dp, known_bits_dq,
                          verbose, counter + 1)
-    return result_p, result_q
-
+        if is_solved:
+            break
+    return result_p, result_q, is_solved
+import sys
 def main():
+    print(sys.getrecursionlimit())  # 查看当前递归深度限制
+    sys.setrecursionlimit(10**6)     # 将递归深度限制调整到 2000
     verbose = True 
     counter = 1
 
@@ -243,9 +249,9 @@ def main():
     my_dq = gmpy2.mpz(0)  # 等价于 mpz_set_ui(my_dq, 0);
 
     # 设置 k, kp, kq 的值
-    k = gmpy2.mpz(35600)
-    kp = gmpy2.mpz(25055)
-    kq = gmpy2.mpz(3229)
+    k = gmpy2.mpz(22946)
+    kp = gmpy2.mpz(42124)
+    kq = gmpy2.mpz(31013)
 
     # Set value for N (example value, replace with actual value)
     with open("RSA-Key.txt", "r") as file:
@@ -254,11 +260,11 @@ def main():
     # Set the value for e (common RSA public exponent)
     e = gmpy2.mpz(65537)
 
-    known_bits_p = [0] * 1024
-    known_bits_q = [0] * 1024
-    known_bits_d = [0] * 2048
-    known_bits_dp = [0] * 1024
-    known_bits_dq = [0] * 1024
+    known_bits_p = [0] * 2048
+    known_bits_q = [0] * 2048
+    known_bits_d = [0] * 4096
+    known_bits_dp = [0] * 2048
+    known_bits_dq = [0] * 2048
 
     known_bits_p = read_known_bits("known_bits_p.txt")
     known_bits_q = read_known_bits("known_bits_q.txt")
@@ -286,13 +292,14 @@ def main():
     #                 possibilities, 32, known_bits_p, known_bits_q, known_bits_d, known_bits_dp, known_bits_dq, verbose, counter)
 
     # 开始 Heninger 和 Shacham 的核心算法
-    result_p, result_q = branch_and_prune(result_p, result_q, my_p, my_q, my_d, my_dp, my_dq, e, k, kp, kq, N, tau_k, tau_kp, tau_kq, 
+    result_p, result_q, is_solved = branch_and_prune(result_p, result_q, my_p, my_q, my_d, my_dp, my_dq, e, k, kp, kq, N, tau_k, tau_kp, tau_kq, 
                     possibilities, 32, known_bits_p, known_bits_q, known_bits_d, known_bits_dp, known_bits_dq, verbose, 1)
     print("FIRST END, ", result_p, result_q)
 
+    if not is_solved:
     # 切换 Kp 和 Kq 进行第二次执行
-    result_p, result_q = branch_and_prune(result_p, result_q, my_p, my_q, my_d, my_dp, my_dq, e, k, kq, kp, N, tau_k, tau_kq, tau_kp, 
-                    possibilities, 32, known_bits_p, known_bits_q, known_bits_d, known_bits_dp, known_bits_dq, verbose, 1)
+        result_p, result_q, is_solved = branch_and_prune(result_p, result_q, my_p, my_q, my_d, my_dp, my_dq, e, k, kq, kp, N, tau_k, tau_kq, tau_kp, 
+                        possibilities, 32, known_bits_p, known_bits_q, known_bits_d, known_bits_dp, known_bits_dq, verbose, 1)
     # print(result_p, result_q, my_p, my_q, my_d, my_dp, my_dq, e, k, kp, kq, N, tau_k, tau_kp, tau_kq, 
     #                 possibilities, 32, known_bits_p, known_bits_q, known_bits_d, known_bits_dp, known_bits_dq, verbose, counter)
 
