@@ -4,22 +4,19 @@ import numpy as np
 import requests
 
 
-def pollard_factorization(n: int, bound: int = 1024) -> int | None:
-    a = 2
-    for j in range(2, bound):
-        a = pow(a, j, n)
-        p = np.gcd(a - 1, n)
-        if 1 < p < n:
-            return int(p)
-    return None
+def fermat_factorization(n: int) -> tuple[int, int]:
+    """Factorize n using Fermat's factorization method."""
+    a = np.ceil(np.sqrt(n))
+    b2 = a**2 - n
+    while not np.sqrt(b2).is_integer():
+        a += 1
+        b2 = a**2 - n
+    return int(a - np.sqrt(b2)), int(a + np.sqrt(b2))
 
 
-def pollard_attack(n: int, e: int) -> int | None:
-    p = pollard_factorization(n)
-    if p is None:
-        return None
-    q = n // p
-    print(f"p: {p}, q: {q}")
+def fermat_attack(n: int, e: int) -> int:
+    """Recover the plaintext m from the ciphertext c."""
+    p, q = fermat_factorization(n)
     d = pow(e, -1, (p - 1) * (q - 1))
     return d
 
@@ -42,7 +39,7 @@ e = public_key["e"]
 print(f"n: {n}")
 print(f"e: {e}")
 
-d = pollard_attack(n, e)
+d = fermat_attack(n, e)
 print(f"d: {d}")
 
 m_decrypted = c**d % n
