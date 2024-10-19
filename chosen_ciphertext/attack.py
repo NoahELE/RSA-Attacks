@@ -3,7 +3,7 @@ import time
 import gmpy2
 import requests
 
-time.sleep(3)  # wait for the server to start
+time.sleep(5)  # wait for the server to start
 
 SERVER_URL = "http://localhost:5000"
 

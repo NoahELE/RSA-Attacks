@@ -1,4 +1,6 @@
-import gmpy2
+import time
+
+import requests
 from numpy import gcd
 
 
@@ -22,10 +24,26 @@ def pollard_attack(n: int, e: int) -> int | None:
     return d
 
 
-p = gmpy2.next_prime(2**16)
-q = gmpy2.next_prime(p)
-n = p * q
-d = pollard_attack(n, 37)
-print(f"n = {n} d = {d}")
+time.sleep(5)  # wait for the server to start
 
-print(n, p * q)
+SERVER_URL = "http://localhost:5000"
+
+m = 42
+
+c = requests.post(
+    f"{SERVER_URL}/encrypt",
+    json={"m": m},
+).json()["c"]
+print(f"c: {c}")
+
+public_key = requests.get(f"{SERVER_URL}/public_key").json()
+n = public_key["n"]
+e = public_key["e"]
+print(f"n: {n}")
+print(f"e: {e}")
+
+d = pollard_attack(n, e)
+print(f"d: {d}")
+
+m_decrypted = c**d % n
+print(f"m_decrypted: {m_decrypted}")
