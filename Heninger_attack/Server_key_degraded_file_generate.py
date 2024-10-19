@@ -1,5 +1,6 @@
 import os
 import random
+import sys
 import time
 
 import gmpy2
@@ -217,6 +218,7 @@ if __name__ == "__main__":
     bits = int(input("Enter the number of bits(for p and q): "))
     if not (512 <= bits <= 2048):
         print("Please enter a valid number of bits.")
+        sys.exit(1)
     else:
         # do not give this to attacker
         key_directory = "./keys/"
