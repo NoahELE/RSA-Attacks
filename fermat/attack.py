@@ -1,5 +1,3 @@
-import time
-
 import numpy as np
 import requests
 
@@ -21,7 +19,7 @@ def fermat_attack(n: int, e: int) -> int:
     return d
 
 
-time.sleep(5)  # wait for the server to start
+print("--- Fermat's Factorization Attack ---")
 
 SERVER_URL = "http://localhost:5000"
 
