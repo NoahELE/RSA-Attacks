@@ -45,5 +45,6 @@ if __name__ == "__main__":
     print("Genarating key pair...")
     keys = keygen.generate_keys(PRIME_BITS, e, receiver)
     ciphertexts_public_pair = keygen.encrypt_with_keys(plaintext, keys)
+    print("Message encrypted")
     print("--------------------------")
     app.run(port=5000)
