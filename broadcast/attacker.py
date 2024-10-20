@@ -75,8 +75,7 @@ if __name__ == "__main__":
         e = ciphertext_public_pairs[0][1][0]
         if cipher:
             byte_recovered_plaintext = cipher ** (1.0 / e)
-            print(f"Recover plaintext: {byte_recovered_plaintext.decode()}")
-            pass
+            print(f"Recovered plaintext: {byte_recovered_plaintext.decode()}")
         else:
             print("Failed to recover the plaintext.")
     except func_timeout.FunctionTimedOut:
