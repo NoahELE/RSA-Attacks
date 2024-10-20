@@ -1,5 +1,5 @@
 from sympy import nextprime, isprime, gcd
-from random import getrandbits
+from random import getrandbits, randint
 import gmpy2
 
 gmpy2.get_context().precision = 2048
@@ -31,10 +31,13 @@ def generate_keys(prime_bits, e, num_receiver):
     return keys
 
 
-def encrypt_with_keys(plaintext: str, keys):
-    int_plaintext = gmpy2.mpz("".join(f"{ord(char):03}" for char in plaintext))
+def encrypt_with_keys(plaintext: str, keys, random_pad):
+    ascii_plaintext = "".join(f"{ord(char):03}" for char in plaintext)
     ciphertext_public_pair = []
     for pub, _ in keys:
+        if random_pad:
+            ascii_plaintext += "0" * randint(0, 10)
+        int_plaintext = gmpy2.mpz(ascii_plaintext)
         ciphertext = encrypt(int_plaintext, pub)
         ciphertext_public_pair += [(str(ciphertext), pub)]
     return ciphertext_public_pair
