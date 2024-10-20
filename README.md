@@ -49,6 +49,37 @@ Run the image
 docker run --rm -it pollard
 ```
 
+### Broadcast Attack
+
+### Wiener's Attack
+
+Build the image
+
+```sh
+cd wieners
+docker build -t wieners .
+```
+or load the image
+
+```sh
+docker load -i wieners.tar
+```
+
+Run the image with optional environmental variables
+```sh
+docker run --rm -it \
+  -e NUM_BITS=<num_bits> \
+  -e WIENER=<wiener_vulnerable> \
+  -e TIMEOUT=1 \
+  wieners
+```
+ - NUM_BITS: number of bits of p and q, e.g., 10, 256, 512, etc. Currently,
+the server takes quite some time to generate keys of size 1024 and
+above. It’s recommended to use smaller number to run the container.
+ - WIENER: if ”y” or ”Y” specified, the scheme is Wiener’s vulnerable
+and it is expected to obtain the private key d. Default to ”y”.
+ - TIMEOUT: timeout in second for the attacker to attack the server
+
 ### Heninger Attack
 
 Build the image
