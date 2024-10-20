@@ -160,7 +160,7 @@ and it is expected to obtain the private key d. Default to ”y”.
 1. Build the image
 
 ```sh
-cd chosen_ciphertext
+cd common-modulus
 docker build -t common-modulus .
 ```
 or directly pull the image
