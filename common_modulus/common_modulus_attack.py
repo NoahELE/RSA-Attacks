@@ -5,9 +5,9 @@ class CommonModulusAttack:
     def rsa_encrypt(self, e, n, m):
         if m >= n:
             raise ValueError("m should less than n")
-        
+
         c = pow(m, e, n)
-        
+
         return c
 
     def extended_gcd(self, a, b):
@@ -18,7 +18,7 @@ class CommonModulusAttack:
             x = y1
             y = x1 - (a // b) * y1
             return x, y
-        
+
     def common_modulus_attack(self, c1, e1, c2, e2, n):
         s1, s2 = self.extended_gcd(e1, e2)
         m = (pow(c1, s1, n) * pow(c2, s2, n)) % n
