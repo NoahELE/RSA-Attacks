@@ -6,24 +6,8 @@ This repo contains implementations of some attacks on RSA encryption algorithm.
 
 ### Chosen Ciphertext Attack
 
-1. Build the image
+Run the image
 
-```sh
-cd chosen_ciphertext
-docker build -t chosen-ciphertext .
-```
-or directly pull the image
-
-```sh
-docker pull noahele/chosen-ciphertext:latest
-```
-
-2. Run the image
-
-```sh
-docker run --rm -it chosen-ciphertext
-```
-or (if pulled from Docker hub)
 ```sh
 docker run --rm -it noahele/chosen-ciphertext
 ```
@@ -31,77 +15,24 @@ docker run --rm -it noahele/chosen-ciphertext
 
 ### Fermat Factorization Attack
 
-1. Build the image
+Run the image
 
-```sh
-cd fermat
-docker build -t fermat .
-```
-or directly pull the image
-
-```sh
-docker pull noahele/fermat:latest
-```
-
-2. Run the image
-
-```sh
-docker run --rm -it fermat
-```
-or (if pulled from Docker hub)
 ```sh
 docker run --rm -it noahele/fermat
 ```
 
 ### Pollard Factorization Attack
 
-1. Build the image
+Run the image
 
-```sh
-cd pollard
-docker build -t pollard .
-```
-or directly pull the image
-
-```sh
-docker pull noahele/pollard:latest
-```
-
-2. Run the image
-
-```sh
-docker run --rm -it pollard
-```
-or (if pulled from Docker hub)
 ```sh
 docker run --rm -it noahele/pollard
 ```
 
 ### Broadcast Attack
 
-1. Build the image
+Run the image with optional environmental variables
 
-```sh
-cd broadcast
-docker build -t broadcast .
-```
-or directly pull the image
-
-```sh
-docker pull noahele/broadcast:latest
-```
-
-2. Run the image with optional environmental variables
-```sh
-docker run --rm -it \
-  -e PUB_EXP=<e> \
-  -e NUM_RECEIVER=<num_receiver> \
-  -e TEXT=<text> \
-  -e PAD=<random_pad> \
-  -e TIMEOUT=1 \
-  broadcast
-```
-or (if pulled from Docker hub)
 ```sh
 docker run --rm -it
   -e PUB_EXP=<e> \
@@ -120,27 +51,8 @@ docker run --rm -it
 
 ### Wiener's Attack
 
-1. Build the image
+Run the image with optional environmental variables
 
-```sh
-cd wieners
-docker build -t wieners .
-```
-or directly pull the image
-
-```sh
-docker pull noahele/wieners:latest
-```
-
-2. Run the image with optional environmental variables
-```sh
-docker run --rm -it \
-  -e NUM_BITS=<num_bits> \
-  -e WIENER=<wiener_vulnerable> \
-  -e TIMEOUT=1 \
-  wieners
-```
-or (if pulled from Docker hub)
 ```sh
 docker run --rm -it
   -e NUM_BITS=<num_bits> \
@@ -157,48 +69,16 @@ and it is expected to obtain the private key d. Default to ”y”.
 
 ### Common Modulus Attack
 
-1. Build the image
+Run the image
 
-```sh
-cd common-modulus
-docker build -t common-modulus .
-```
-or directly pull the image
-
-```sh
-docker pull noahele/common-modulus:latest
-```
-
-2. Run the image
-
-```sh
-docker run --rm -it common-modulus
-```
-or (if pulled from Docker hub)
 ```sh
 docker run --rm -it noahele/common-modulus
 ```
 
 ### Heninger Attack
 
-1. Build the image
+Run the image
 
-```sh
-cd Heninger_attack
-docker build -t heninger .
-```
-or directly pull the image
-
-```sh
-docker pull noahele/heninger:latest
-```
-
-2. Run the image
-
-```sh
-docker run --rm -it heninger
-```
-or (if pulled from Docker hub)
 ```sh
 docker run --rm -it noahele/heninger
 ```
