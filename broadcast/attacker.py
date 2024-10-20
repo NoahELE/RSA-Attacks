@@ -41,7 +41,7 @@ def get_ciphertext_public_key():
     try:
         response = requests.get(f"{SERVER_URL}/ciphertext_public_key")
         if response.ok:
-            return response.json()
+            return response.json()["ciphertext_public"]
         return None
     except Exception:
         return None
@@ -51,16 +51,16 @@ if __name__ == "__main__":
     print("----------Attacker----------")
 
     patient = 3
-    ciphertext_public_key = None
+    ciphertext_public_pairs = None
     while patient != 0:
-        ciphertext_public_key = get_ciphertext_public_key()
-        if not ciphertext_public_key:
+        ciphertext_public_pairs = get_ciphertext_public_key()
+        if not ciphertext_public_pairs:
             print("Waiting for server...for 10 more sec")
             time.sleep(10)
             patient -= 1
         else:
             break
-    if not ciphertext_public_key:
+    if not ciphertext_public_pairs:
         print("No more patience. Server seems to be busy generating keys.")
         raise Exception("Error: fail to get public key")
 
@@ -69,9 +69,13 @@ if __name__ == "__main__":
     print(f"Running attack...with timeout {TIMEOUT}s")
 
     try:
-        cipher = func_timeout.func_timeout(TIMEOUT, crt, args=(ciphertext_public_key,))
+        cipher = func_timeout.func_timeout(
+            TIMEOUT, crt, args=(ciphertext_public_pairs,)
+        )
+        e = ciphertext_public_pairs[0][1][0]
         if cipher:
-            print(f"Recover plaintext: {cipher**(1.0/3)}")
+            byte_recovered_plaintext = cipher ** (1.0 / e)
+            print(f"Recover plaintext: {byte_recovered_plaintext.decode()}")
             pass
         else:
             print("Failed to recover the plaintext.")

@@ -27,11 +27,11 @@ def generate_keys(prime_bits, e, num_receiver):
                 continue
 
 
-def encrypt_with_keys(plaintext, keys):
-    # TODO: convert str to byte
+def encrypt_with_keys(plaintext: str, keys):
+    byte_plaintext = plaintext.encode()
     ciphertext_public_pair = []
     for pub, _ in keys:
-        ciphertext = encrypt(plaintext, pub)
+        ciphertext = encrypt(byte_plaintext, pub)
         ciphertext_public_pair += [(ciphertext, pub)]
     return ciphertext_public_pair
 

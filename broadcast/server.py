@@ -30,7 +30,7 @@ if "PAD" in os.environ:
 @app.route("/ciphertext_public_key", methods=["GET"])
 def get_ciphertext_public_key():
     try:
-        return jsonify(ciphertexts_public_pair), 200
+        return jsonify({"ciphertext_public": ciphertexts_public_pair}), 200
     except Exception as e:
         return jsonify({"error": str(e)}), 400
 
