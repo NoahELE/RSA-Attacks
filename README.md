@@ -155,6 +155,30 @@ above. It’s recommended to use smaller number to run the container.
 and it is expected to obtain the private key d. Default to ”y”.
  - TIMEOUT: timeout in second for the attacker to attack the server
 
+### Common Modulus Attack
+
+1. Build the image
+
+```sh
+cd chosen_ciphertext
+docker build -t common-modulus .
+```
+or directly pull the image
+
+```sh
+docker pull noahele/common-modulus:latest
+```
+
+2. Run the image
+
+```sh
+docker run --rm -it common-modulus
+```
+or (if pulled from Docker hub)
+```sh
+docker run --rm -it noahele/common-modulus
+```
+
 ### Heninger Attack
 
 1. Build the image
