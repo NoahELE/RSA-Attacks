@@ -6,14 +6,14 @@ This repo contains implementations of some attacks on RSA encryption algorithm.
 
 ### Chosen Ciphertext Attack
 
-Build the image
+1. Build the image
 
 ```sh
 cd chosen_ciphertext
 docker build -t chosen-ciphertext .
 ```
 
-Run the image
+2. Run the image
 
 ```sh
 docker run --rm -it chosen-ciphertext
@@ -21,14 +21,14 @@ docker run --rm -it chosen-ciphertext
 
 ### Fermat Factorization Attack
 
-Build the image
+1. Build the image
 
 ```sh
 cd fermat
 docker build -t fermat .
 ```
 
-Run the image
+2. Run the image
 
 ```sh
 docker run --rm -it fermat
@@ -36,14 +36,14 @@ docker run --rm -it fermat
 
 ### Pollard Factorization Attack
 
-Build the image
+1. Build the image
 
 ```sh
 cd pollard
 docker build -t pollard .
 ```
 
-Run the image
+2. Run the image
 
 ```sh
 docker run --rm -it pollard
@@ -53,7 +53,7 @@ docker run --rm -it pollard
 
 ### Wiener's Attack
 
-Build the image
+1. Build the image
 
 ```sh
 cd wieners
@@ -65,7 +65,7 @@ or load the image
 docker load -i wieners.tar
 ```
 
-Run the image with optional environmental variables
+2. Run the image with optional environmental variables
 ```sh
 docker run --rm -it \
   -e NUM_BITS=<num_bits> \
@@ -82,14 +82,14 @@ and it is expected to obtain the private key d. Default to ”y”.
 
 ### Heninger Attack
 
-Build the image
+1. Build the image
 
 ```sh
 cd Heninger_attack
 docker build -t heninger .
 ```
 
-Run the image
+2. Run the image
 
 ```sh
 docker run --rm -it heninger
