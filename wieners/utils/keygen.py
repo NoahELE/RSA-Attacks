@@ -1,8 +1,36 @@
 from sympy import nextprime, isprime, gcd
-from random import getrandbits
+from random import getrandbits, randint
+
+
+def generate_keys(prime_bits, d_wiener_condition):
+    """
+    Generates keys based on number of bits of p and q and whether the keys should be Wiener's vulnerable
+    """
+
+    # select p and q automatically and generate key pair
+    while True:
+        try:
+            p = generate_prime(prime_bits)
+            q = generate_prime(prime_bits)
+
+            # check the primality of p and q
+            assert isprime(p), "the generated number is not prime"
+            assert isprime(q), "the generated number is not prime"
+
+            # generate vulnerable key pair with small d
+            w = int((1 / 3) * ((p * q) ** 0.25))
+            if d_wiener_condition:
+                d = randint(2, w)
+            else:
+                d = randint(w, totient(p, q))
+            keys = generate_keypair_priv(p, q, d)
+            return keys
+        except Exception:
+            continue
 
 
 def totient(p, q):
+    """Computes phi"""
     return (p - 1) * (q - 1)
 
 
