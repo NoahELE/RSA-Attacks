@@ -12,11 +12,6 @@ This repo contains implementations of some attacks on RSA encryption algorithm.
 cd chosen_ciphertext
 docker build -t chosen-ciphertext .
 ```
-or load the image
-
-```sh
-docker load -i ./artifacts/chosen-ciphertext.tar
-```
 
 2. Run the image
 
@@ -31,11 +26,6 @@ docker run --rm -it chosen-ciphertext
 ```sh
 cd fermat
 docker build -t fermat .
-```
-or load the image
-
-```sh
-docker load -i ./artifacts/fermat.tar
 ```
 
 2. Run the image
@@ -52,11 +42,6 @@ docker run --rm -it fermat
 cd pollard
 docker build -t pollard .
 ```
-or load the image
-
-```sh
-docker load -i ./artifacts/pollard.tar
-```
 
 2. Run the image
 
@@ -71,11 +56,6 @@ docker run --rm -it pollard
 ```sh
 cd broadcast
 docker build -t broadcast .
-```
-or load the image
-
-```sh
-docker load -i ./artifacts/broadcast.tar
 ```
 
 2. Run the image with optional environmental variables
@@ -102,11 +82,6 @@ docker run --rm -it \
 cd wieners
 docker build -t wieners .
 ```
-or load the image
-
-```sh
-docker load -i ./artifacts/wieners.tar
-```
 
 2. Run the image with optional environmental variables
 ```sh
@@ -130,11 +105,6 @@ and it is expected to obtain the private key d. Default to ”y”.
 ```sh
 cd Heninger_attack
 docker build -t heninger .
-```
-or load the image
-
-```sh
-docker load -i ./artifacts/heninger.tar
 ```
 
 2. Run the image
