@@ -7,7 +7,7 @@ app = Flask(__name__)
 PRIME_BITS = 512  # constant
 e = 3
 receiver = 3
-plaintext = "102"
+plaintext = "welcome to broadcast attack simulation."
 random_pad = False
 
 # load environment variable if specified
@@ -22,7 +22,7 @@ if "NUM_RECEIVER" in os.environ:
     except Exception:
         pass
 if "TEXT" in os.environ:
-    plaintext = os.environ["TEXT"]
+    plaintext = os.environ["TEXT"].lower()
 if "PAD" in os.environ:
     random_pad = True if os.environ["PAD"].lower() == "y" else False
 

@@ -3,7 +3,6 @@ import os
 import func_timeout
 import gmpy2
 import time
-from math import ceil
 from utils import attack
 
 gmpy2.get_context().precision = 2048
