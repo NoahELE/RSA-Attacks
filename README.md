@@ -51,6 +51,34 @@ docker run --rm -it pollard
 
 ### Broadcast Attack
 
+1. Build the image
+
+```sh
+cd broadcast
+docker build -t broadcast .
+```
+or load the image
+
+```sh
+docker load -i broadcast.tar
+```
+
+2. Run the image with optional environmental variables
+```sh
+docker run --rm -it \
+  -e PUB_EXP=<e> \
+  -e NUM_RECEIVER=<num_receiver> \
+  -e TEXT=<text> \
+  -e PAD=<random_pad> \
+  -e TIMEOUT=1 \
+  broadcast
+```
+ - PUB_EXP: the public exponent used for encryption. Default to 3.
+ - NUM_RECEIVER: number of receiver in the boardcast. Default to 3.
+ - TEXT: the broadcast message. Default to "welcome to broadcast attack simulation".
+ - PAD: random padding for the plaintext before encryption. Default to `False`.
+ - TIMEOUT: timeout in second for the attacker to attack the server
+
 ### Wiener's Attack
 
 1. Build the image
