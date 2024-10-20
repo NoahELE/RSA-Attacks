@@ -60,7 +60,7 @@ docker build -t broadcast .
 or load the image
 
 ```sh
-docker load -i broadcast.tar
+docker load -i ./artifacts/broadcast.tar
 ```
 
 2. Run the image with optional environmental variables
@@ -90,7 +90,7 @@ docker build -t wieners .
 or load the image
 
 ```sh
-docker load -i wieners.tar
+docker load -i ./artifacts/wieners.tar
 ```
 
 2. Run the image with optional environmental variables
